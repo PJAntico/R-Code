@@ -1,5 +1,5 @@
 Sys.setenv("plotly_username" = "PACapital")
-Sys.setenv("plotly_api_key" = "cONj7dxNwD5qVVnQvqRl")
+Sys.setenv("plotly_api_key" = "")
 
 require("openxlsx")
 require("dplyr")
