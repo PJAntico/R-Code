@@ -7,6 +7,7 @@ require(tibble)
 require(reshape)
 require(grid)
 require(ggthemes)
+require(MASS)
 
 
 options(scipen=999999)
@@ -65,10 +66,11 @@ dim(df_train)
 plot(as.data.frame(df_train))
 
 ############################################ Check for Collinearity ###################################################
+df2 <- as.data.frame(df_train)
 
 #check pairwise correlations of the predictors
-df_train$IV=df_train$IV/df_train$SwapRate
-lmodvol<-lm(IV~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df)
+df2$IV=df2$IV/df2$SwapRate
+lmodvol<-lm(IV~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2)
 
 dfm<-model.matrix(lmodvol)[,-1]
 head(dfm)
@@ -88,37 +90,37 @@ vif(dfm[,-5]) #remove SPX
 
 #Create the model without SPX and compare to the original model
 #had to rename this or the boxcox function below will not run
-df2 <- as.data.frame(df_train)
 lmodvol2<-lm(IV~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2)
 summary(lmodvol2)
 summary(lmodvol)
 
 #SPXHV comes out as not a statistically significant variable - try building a model without this too and see how it looks
-lmodvol2a<-lm(IV~SwapRate+HV+VIX+Curve+CDXHY+Spread,data=df2)
-summary(lmodvol2a)
-summary(lmodvol2)
+#lmodvol2a<-lm(IV~SwapRate+HV+VIX+Curve+CDXHY+Spread,data=df2)
+#summary(lmodvol2a)
+#summary(lmodvol2)
 
 
 ###################################### Residual v. Predictor Plots ######################################################
 #Residuals v. Predictors
+model = lmodvol
 par(mfrow=c(2,5))
-plot(df2$IV,residuals(lmodvol2), xlab="Implied Vol", ylab="Residuals")
+plot(df2$IV,residuals(model), xlab="Implied Vol", ylab="Residuals")
 abline(h=0)
-plot(df2$SwapRate,residuals(lmodvol2), xlab="10Y Swap Rate", ylab="Residuals")
+plot(df2$SwapRate,residuals(model), xlab="10Y Swap Rate", ylab="Residuals")
 abline(h=0)
-plot(df2$HV,residuals(lmodvol2), xlab="10Y Swap Rate HV", ylab="Residuals")
+plot(df2$HV,residuals(model), xlab="10Y Swap Rate HV", ylab="Residuals")
 abline(h=0)
-plot(df2$VIX,residuals(lmodvol2), xlab="VIX", ylab="Residuals")
+plot(df2$VIX,residuals(model), xlab="VIX", ylab="Residuals")
 abline(h=0)
-plot(df2$Curve,residuals(lmodvol2), xlab="Curve", ylab="Residuals")
+plot(df2$Curve,residuals(model), xlab="Curve", ylab="Residuals")
 abline(h=0)
-plot(df2$SPX,residuals(lmodvol2), xlab="SPX", ylab="Residuals")
+plot(df2$SPX,residuals(model), xlab="SPX", ylab="Residuals")
 abline(h=0)
-plot(df2$SPXHV,residuals(lmodvol2), xlab="SPX Historical Vol", ylab="Residuals")
+plot(df2$SPXHV,residuals(model), xlab="SPX Historical Vol", ylab="Residuals")
 abline(h=0)
-plot(df2$CDXHY,residuals(lmodvol2), xlab="HY Spreads", ylab="Residuals")
+plot(df2$CDXHY,residuals(model), xlab="HY Spreads", ylab="Residuals")
 abline(h=0)
-plot(df2$Spread,residuals(lmodvol2), xlab="Swap Spreads", ylab="Residuals")
+plot(df2$Spread,residuals(model), xlab="Swap Spreads", ylab="Residuals")
 abline(h=0)
 par(mfrow=c(1,1))
 
@@ -127,22 +129,22 @@ par(mfrow=c(1,1))
 
 #boxcox transformation
 par(mfrow=c(1,1))
-boxcox(lmodvol2,plotit=T)
-bc=boxcox(lmodvol2,plotit=T,lambda=seq(-.5,.5,by=.01))
-bc$x[which.max(bc$y)] #Best transformation is the power of -.25
-summary(lm(IV^-.25~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2))
-#This model increases the adjusted r-squared from .8389 to .8662, BUT ALL of the variables are relevant
+boxcox(lmodvol,plotit=T)
+bc=boxcox(lmodvol,plotit=T,lambda=seq(0,-.5,by=-.01))
+bc$x[which.max(bc$y)] #Best transformation is the power of .3838384
+summary(lm(IV^-.3838384~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2))
+#This model increases the adjusted r-squared from .7903 to .9112
 
 #log transformations
-logtrans(lmodvol2,plotit=T)
-lt=logtrans(lmodvol2,plotit=T,alpha=seq(-17,0,by=.1))
-lt$x[which.max(lt$y)] #Alpha equal to -12 is optimal
-summary(lm(log(IV-12)~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2))
-#This model increases the adjusted r-squared from .8389 to .8719, BUT CDXHY is not relevant
+logtrans(lmodvol,plotit=T)
+lt=logtrans(lmodvol,plotit=T,alpha=seq(-2.5,0,by=.1))
+lt$x[which.max(lt$y)] #Alpha equal to -2.070707 is optimal
+summary(lm(log(IV-2.070707)~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2))
+#This model increases the adjusted r-squared from .7903 to .9057, BUT CDXHY is not relevant
 
 #New model
-lmodvol3<-lm(IV^-.25~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2)
-lmodvol4<-lm(log(IV-12)~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2)
+lmodvol3<-lm(IV^-.3838384~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2)
+lmodvol4<-lm(log(IV-2.070707)~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2)
 summary(lmodvol3)
 summary(lmodvol4)
 par(mfrow=c(1,1))
