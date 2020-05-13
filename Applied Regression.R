@@ -149,51 +149,58 @@ summary(lmodvol3)
 summary(lmodvol4)
 par(mfrow=c(1,1))
 
-#lmodvol3 has the best combination of high r^2 and relevance of variables, and as such, is the "best" model so far
+#lmodvol3 has high p-values for both VIX and Curve, and lmodvol4 has high p-values for and Curve, so, take them out.  Both 
+#also have the the best combination of high r^2 (.9112 and .9057, respectively) and relevance of variables, and as such, 
+# these are the "best" models so far
+lmodvol3<-lm(IV^-.3838384~SwapRate+HV+SPX+SPXHV+CDXHY+Spread,data=df2)
+summary(lmodvol3)
+lmodvol4<-lm(log(IV-2.070707)~SwapRate+HV+Curve+SPX+SPXHV+CDXHY+Spread,data=df2)
+summary(lmodvol4)
 
 #############################################  Polynomials  ########################################################
 #multiple polynomials
-summary(lm(IV~polym(SwapRate,HV,degree=2)+VIX+Curve+SPXHV+CDXHY+Spread,df2)) # .882
+summary(lm(IV~polym(SwapRate,HV,degree=2)+SPX+SPXHV+CDXHY+Spread,df2)) # .9121
 
-summary(lm(IV~polym(SwapRate,VIX,degree=2)+HV+Curve+SPXHV+CDXHY+Spread,df2)) # .8836
+summary(lm(IV~polym(SwapRate,VIX,degree=2)+HV+Curve+SPX+CDXHY+Spread,df2)) # .9246
 
-summary(lm(IV~polym(SwapRate,Curve,degree=2)+HV+VIX+SPXHV+CDXHY+Spread,df2)) # .9093
-summary(lm(IV~polym(SwapRate,Curve,degree=3)+HV+VIX+SPXHV+CDXHY+Spread,df2)) # .9152
-summary(lm(IV~polym(SwapRate,Curve,degree=4)+HV+VIX+SPXHV+CDXHY+Spread,df2)) # .9362
-summary(lm(IV~polym(SwapRate,Curve,degree=5)+HV+VIX+SPXHV+CDXHY+Spread,df2)) # .9444
-summary(lm(IV~polym(SwapRate,Curve,degree=6)+HV+VIX+SPXHV+CDXHY+Spread,df2)) # .9482***
+summary(lm(IV~polym(SwapRate,Curve,degree=2)+HV+VIX+SPX+SPXHV+CDXHY+Spread,df2)) # .9299
+summary(lm(IV~polym(SwapRate,Curve,degree=3)+HV+VIX+SPX+SPXHV+CDXHY+Spread,df2)) # .9513
+summary(lm(IV~polym(SwapRate,Curve,degree=4)+HV+VIX+SPX+SPXHV+CDXHY+Spread,df2)) # .9636
+summary(lm(IV~polym(SwapRate,Curve,degree=5)+HV+VIX+SPX+SPXHV+CDXHY+Spread,df2)) # .9688
+summary(lm(IV~polym(SwapRate,Curve,degree=6)+HV+VIX+SPX+SPXHV+CDXHY+Spread,df2)) # .9735***
 
-summary(lm(IV~polym(SwapRate,SPXHV,degree=2)+HV+VIX+Curve+CDXHY+Spread,df2)) # .8823
-summary(lm(IV~polym(SwapRate,SPXHV,degree=3)+HV+VIX+Curve+CDXHY+Spread,df2)) # .883
+summary(lm(IV~polym(SwapRate,SPXHV,degree=2)+HV+VIX+SPX+CDXHY+Spread,df2)) # .9146
+summary(lm(IV~polym(SwapRate,SPXHV,degree=3)+HV+VIX+SPX+CDXHY+Spread,df2)) # .9398
 
-summary(lm(IV~polym(SwapRate,CDXHY,degree=2)+HV+VIX+Curve+SPXHV+Spread,df2)) # .8908
-summary(lm(IV~polym(SwapRate,CDXHY,degree=3)+HV+VIX+Curve+SPXHV+Spread,df2)) # .899
-summary(lm(IV~polym(SwapRate,CDXHY,degree=4)+HV+VIX+Curve+SPXHV+Spread,df2)) # .9026
+summary(lm(IV~polym(SwapRate,CDXHY,degree=2)+HV+VIX+SPX+SPXHV+Spread,df2)) # .9119
+summary(lm(IV~polym(SwapRate,CDXHY,degree=3)+HV+VIX+SPX+SPXHV+Spread,df2)) # .9397
+summary(lm(IV~polym(SwapRate,CDXHY,degree=4)+HV+VIX+SPX+SPXHV+Spread,df2)) # .9555
+summary(lm(IV~polym(SwapRate,CDXHY,degree=5)+HV+VIX+SPX+SPXHV+Spread,df2)) # .9602
 
-summary(lm(IV~polym(SwapRate,Spread,degree=2)+HV+VIX+Curve+SPXHV+CDXHY,df2)) # .8953
-summary(lm(IV~polym(SwapRate,Spread,degree=3)+HV+VIX+Curve+SPXHV+CDXHY,df2)) # .9152
-summary(lm(IV~polym(SwapRate,Spread,degree=4)+HV+VIX+Curve+SPXHV+CDXHY,df2)) # .9221
-summary(lm(IV~polym(SwapRate,Spread,degree=5)+HV+VIX+Curve+SPXHV+CDXHY,df2)) # .9285
-summary(lm(IV~polym(SwapRate,Spread,degree=6)+HV+VIX+Curve+SPXHV+CDXHY,df2)) # .9374
+summary(lm(IV~polym(SwapRate,Spread,degree=2)+HV+VIX+Curve+SPX+SPXHV+CDXHY,df2)) # .925
+summary(lm(IV~polym(SwapRate,Spread,degree=3)+HV+VIX+Curve+SPX+SPXHV+CDXHY,df2)) # .9559
+summary(lm(IV~polym(SwapRate,Spread,degree=4)+HV+VIX+Curve+SPX+SPXHV+CDXHY,df2)) # .9655
+summary(lm(IV~polym(SwapRate,Spread,degree=5)+HV+VIX+Curve+SPX+SPXHV+CDXHY,df2)) # .968
+summary(lm(IV~polym(SwapRate,Spread,degree=6)+HV+VIX+Curve+SPX+SPXHV+CDXHY,df2)) # .9699
 
-lmodvol6 <- lm(IV~polym(SwapRate,Curve,degree=6)+HV+VIX+SPXHV+CDXHY+Spread,df2)
+lmodvol6 <- lm(IV~polym(SwapRate,Curve,degree=6)+HV+VIX+SPX+SPXHV+CDXHY+Spread,df2)
 plot(lmodvol6)
 
 #Plot the 1) original model, 2) the best transformed response model, 3) the best single polynomial model, and 4) the best multiple polynomial model
 par(mfrow=c(2,2))
-plot(lmodvol2)
-plot(lmodvol3)  # .8719 r-squared, negatively skewed Q-Q plot, not "complex"
-plot(lmodvol5)  # .8819 r-squared, slightly positively skewed Q-Q plot, not "complex"
-plot(lmodvol6)  # .9374 r-squared, LONG-TAILED distribution, worst "residuals v. leverage" plot of the 3, "complex" 
+plot(lmodvol)   # .7903 r-squared, slight curvature in the residuals, highly skewed Q-Q plot
+plot(lmodvol3)  # .9112 r-squared, negatively skewed Q-Q plot, not "complex"
+plot(lmodvol4)  # .9057 r-squared, slightly positively skewed Q-Q plot, not "complex"
+plot(lmodvol6)  # .9735 r-squared, LONG-TAILED distribution, worst "residuals v. leverage" plot of the 3, "complex" 
 par(mfrow=c(2,2))
 
 #Check that the curvature in the Residuals v. SwapRate predictor is no longer there in the newer models
 par(mfrow=c(2,2))
-plot(df2$SwapRate,residuals(lmodvol2), xlab="10Y Swap Rate", ylab="Residuals", main="Simple Model")
+plot(df2$SwapRate,residuals(lmodvol), xlab="10Y Swap Rate", ylab="Residuals", main="Simple Model")
 abline(h=0)
 plot(df2$SwapRate,residuals(lmodvol3), xlab="10Y Swap Rate", ylab="Residuals", main="Transformed Model")
 abline(h=0)
-plot(df2$SwapRate,residuals(lmodvol5), xlab="10Y Swap Rate", ylab="Residuals", main="Single Polynomial Model")
+plot(df2$SwapRate,residuals(lmodvol4), xlab="10Y Swap Rate", ylab="Residuals", main="Single Polynomial Model")
 abline(h=0)
 plot(df2$SwapRate,residuals(lmodvol6), xlab="10Y Swap Rate", ylab="Residuals", main="Multiple Polynomial Model")
 abline(h=0)
@@ -205,11 +212,11 @@ par(mfrow=c(1,1))
 #Plot the Residuals of all of the models and compare (have to work with the residuals because we have no access to the errors)
 #looking for constant symetrical variation (homoscedasticity) in the vertical direction, and nonlinearity
 par(mfrow=c(2,2))
-plot(fitted(lmodvol2),residuals(lmodvol),xlab="Fitted",ylab="Residuals",main="Simple model")
+plot(fitted(lmodvol),residuals(lmodvol),xlab="Fitted",ylab="Residuals",main="Simple model")
 abline(h=0)
 plot(fitted(lmodvol3),residuals(lmodvol3),xlab="Fitted",ylab="Residuals",main="Transformed Model")
 abline(h=0)
-plot(fitted(lmodvol5),residuals(lmodvol5),xlab="Fitted",ylab="Residuals",main="Single Polynomial Model")
+plot(fitted(lmodvol4),residuals(lmodvol4),xlab="Fitted",ylab="Residuals",main="Single Polynomial Model")
 abline(h=0)
 plot(fitted(lmodvol6),residuals(lmodvol6),xlab="Fitted",ylab="Residuals",main="Multiple Polynomial Model")
 abline(h=0)
@@ -219,12 +226,12 @@ par(mfrow=c(1,1))
 #effectively double the resolution by connsidering the absolute value of the residuals
 #and then do a quick numerical tst to check nonconstant variance
 par(mfrow=c(2,2))
-plot(fitted(lmodvol2),sqrt(abs(residuals(lmodvol))),xlab="Fitted",ylab=expression(sqrt(hat(epsilon))),main="Simple Model")
+plot(fitted(lmodvol),sqrt(abs(residuals(lmodvol))),xlab="Fitted",ylab=expression(sqrt(hat(epsilon))),main="Simple Model")
 summary(lm(sqrt(abs(residuals(lmodvol)))~fitted(lmodvol))) #predictor is the fitted values
 plot(fitted(lmodvol3),sqrt(abs(residuals(lmodvol3))),xlab="Fitted",ylab=expression(sqrt(hat(epsilon))),main="Transformed Model")
 summary(lm(sqrt(abs(residuals(lmodvol3)))~fitted(lmodvol3))) #predictor is the fitted values
-plot(fitted(lmodvol5),sqrt(abs(residuals(lmodvol5))),xlab="Fitted",ylab=expression(sqrt(hat(epsilon))), main="Single Polynomial Model")
-summary(lm(sqrt(abs(residuals(lmodvol5)))~fitted(lmodvol5))) #predictor is the fitted values
+plot(fitted(lmodvol4),sqrt(abs(residuals(lmodvol4))),xlab="Fitted",ylab=expression(sqrt(hat(epsilon))), main="Single Polynomial Model")
+summary(lm(sqrt(abs(residuals(lmodvol4)))~fitted(lmodvol4))) #predictor is the fitted values
 plot(fitted(lmodvol6),sqrt(abs(residuals(lmodvol6))),xlab="Fitted",ylab=expression(sqrt(hat(epsilon))), main="Multiple Polynomial Model")
 summary(lm(sqrt(abs(residuals(lmodvol6)))~fitted(lmodvol6))) #predictor is the fitted values
 par(mfrow=c(1,1))
@@ -233,46 +240,46 @@ par(mfrow=c(1,1))
 ########################################## Normality #################################################################
 #Plot the standardized residuals for each of the models to compare
 par(mfrow=c(2,2))
-qqnorm(residuals(lmodvol2),ylab="Residuals", main="Simple Model")
-qqline(residuals(lmodvol2))
+qqnorm(residuals(lmodvol),ylab="Residuals", main="Simple Model")
+qqline(residuals(lmodvol))
 qqnorm(residuals(lmodvol3),ylab="Residuals", main="Transformed Model")
 qqline(residuals(lmodvol3))
-qqnorm(residuals(lmodvol5),ylab="Residuals", main="Single Polynomial Model")
-qqline(residuals(lmodvol5))
+qqnorm(residuals(lmodvol4),ylab="Residuals", main="Single Polynomial Model")
+qqline(residuals(lmodvol4))
 qqnorm(residuals(lmodvol6),ylab="Residuals", main="Multiple Polynomial Model")
 qqline(residuals(lmodvol6))
 par(mfrow=c(1,1))
 
 #Run a histogram for each of the models
 par(mfrow=c(2,2))
-hist(residuals(lmodvol2),xlab="Residuals",main="Simple Model")
+hist(residuals(lmodvol),xlab="Residuals",main="Simple Model")
 hist(residuals(lmodvol3),xlab="Residuals",main="Transformed Model")
-hist(residuals(lmodvol5),xlab="Residuals",main="Single Polynomial Model")
+hist(residuals(lmodvol4),xlab="Residuals",main="Single Polynomial Model")
 hist(residuals(lmodvol6),xlab="Residuals",main="Multiple Polynomial Model")
 par(mfrow=c(1,1))
 
 #Run a shapiro test for each of the models
-shapiro.test(residuals(lmodvol2))
+shapiro.test(residuals(lmodvol))
 shapiro.test(residuals(lmodvol3))
-shapiro.test(residuals(lmodvol5))
+shapiro.test(residuals(lmodvol4))
 shapiro.test(residuals(lmodvol6))
 #None are normal
 
 ########################################## Leverages #################################################################
 n=nrow(df2)
-p=length(coef(lmodvol2))
+p=length(coef(lmodvol))
 
 #lmodvol
-hatv2<-hatvalues(lmodvol2)
-head(hatv2)
-sum(hatv2)
+hatv<-hatvalues(lmodvol)
+head(hatv)
+sum(hatv)
 2*p/n
-large_hatv2<-data.frame(hatv2[hatv2>2*p/n])
-colnames(large_hatv2)<-c("hatv2")
-large_hatv2$date=as.character(rownames(large_hatv2))
-large_hatv2<-large_hatv2[,c(2,1)]
+large_hatv<-data.frame(hatv[hatv>2*p/n])
+colnames(large_hatv)<-c("hatv")
+large_hatv$date=as.character(rownames(large_hatv))
+large_hatv<-large_hatv[,c(2,1)]
 # largest_hatv<-large_hatv[order(-large_hatv$hatv),,drop=FALSE]
-dim(large_hatv2)
+dim(large_hatv)
 
 #lmodvol3
 hatv3<-hatvalues(lmodvol3)
@@ -287,16 +294,16 @@ large_hatv3<-large_hatv3[,c(2,1)]
 dim(large_hatv3)
 
 #lmodvol5
-hatv5<-hatvalues(lmodvol5)
-head(hatv5)
-sum(hatv5)
+hatv4<-hatvalues(lmodvol4)
+head(hatv4)
+sum(hatv4)
 2*p/n
-large_hatv5<-data.frame(hatv5[hatv5>2*p/n])
-colnames(large_hatv5)<-c("hatv5")
-large_hatv5$date=as.character(rownames(large_hatv5))
-large_hatv5<-large_hatv5[,c(2,1)]
+large_hatv4<-data.frame(hatv4[hatv4>2*p/n])
+colnames(large_hatv4)<-c("hatv4")
+large_hatv4$date=as.character(rownames(large_hatv4))
+large_hatv4<-large_hatv4[,c(2,1)]
 # large_hatv5<-large_hatv5[order(-large_hatv5$hatv),,drop=FALSE]
-dim(large_hatv5)
+dim(large_hatv4)
 
 #lmodvol6
 hatv6<-hatvalues(lmodvol6)
@@ -311,11 +318,12 @@ large_hatv6<-large_hatv6[,c(2,1)]
 dim(large_hatv6)
 
 #compare summaries of all the largest hatvalues for each model
-large_hatv_table<-full_join(large_hatv2, large_hatv3, by="date")
-large_hatv_table<-full_join(large_hatv_table, large_hatv5, by="date")
-large_hatv_table<-large_hatv_table%>%arrange(desc(hatv2))
-large_hatv_table<-na.omit(large_hatv_table[large_hatv_table$hatv2>4*p/n | large_hatv_table$hatv3>4*p/n | large_hatv_table$hatv5>4*p/n,])
+large_hatv_table<-full_join(large_hatv, large_hatv3, by="date")
+large_hatv_table<-full_join(large_hatv_table, large_hatv4, by="date")
+large_hatv_table<-large_hatv_table%>%arrange(desc(hatv))
+large_hatv_table<-na.omit(large_hatv_table[large_hatv_table$hatv>4*p/n | large_hatv_table$hatv3>4*p/n | large_hatv_table$hatv4>4*p/n,])
 large_hatv_table<-large_hatv_table%>%arrange(desc(date))
+
 
 #for export to .csv files
 large_hatv_table[,2:4]<-round(large_hatv_table[,2:4],4)
@@ -356,14 +364,14 @@ df2 %>%
 
 #lmodvol outlier analysis
 #Studentized residuals for lmodvol
-stud2=rstudent(lmodvol2)
-(tt=stud2[which.max(abs(stud2))])
-stud2<-data.frame(stud2)
-colnames(stud2)<-c("stud2")
-stud2$date=as.character(rownames(stud2))
-stud2<-stud2[,c(2,1)]
+stud=rstudent(lmodvol)
+(tt=stud[which.max(abs(stud))])
+stud<-data.frame(stud)
+colnames(stud)<-c("stud")
+stud$date=as.character(rownames(stud))
+stud<-stud[,c(2,1)]
 #Bonferroni critical value
-bv<-qt(1-(.05/(1807*2)),1807-9-1)
+bv<-qt(1-(.05/(3022*2)),3022-8-1)
 # Bonferroni critical value is 4.202695; highest studentized residual is 9/4/2013, at 3.58657 - NOT an outlier
 #new alpha
 alpha2=.05/n
@@ -379,32 +387,32 @@ colnames(stud3)<-c("stud3")
 stud3$date=as.character(rownames(stud3))
 stud3<-stud3[,c(2,1)]
 #Bonferroni critical value
-bv3<-qt(1-(.05/(1807*2)),1807-9-1)
+bv3<-qt(1-(.05/(3024*2)),3024-6-1)
 # Bonferroni critical value is 4.202695; highest studentized residual is 9/4/2013, at -4.02483 - NOT an outlier, but close
 #Calculate the p-value: 2*P(t>tt)
 2*(1-pt(abs(tt3),n-p-1)); alpha2  #p-value is greater than alpha2, so not an outlier
 
-#lmodvol5 outlier analysis
+#lmodvol4 outlier analysis
 #Studentized residuals for lmodvol5
-stud5=rstudent(lmodvol5)
-(tt5=stud5[which.max(abs(stud5))])
-stud5<-data.frame(stud5)
-colnames(stud5)<-c("stud5")
-stud5$date=as.character(rownames(stud5))
-stud5<-stud5[,c(2,1)]
+stud4=rstudent(lmodvol4)
+(tt4=stud4[which.max(abs(stud4))])
+stud4<-data.frame(stud4)
+colnames(stud4)<-c("stud4")
+stud4$date=as.character(rownames(stud4))
+stud4<-stud4[,c(2,1)]
 #Bonferroni critical value
-bv5<-qt(1-(.05/(1807*2)),1807-9-1)
+bv4<-qt(1-(.05/(3023*2)),3023-7-1)
 # Bonferroni critical value is 4.202695; highest studentized residual is 7/3/2013, at 4.314365 - IS an outlier
 #Calculate the p-value: 2*P(t>tt)
-2*(1-pt(abs(tt5),n-p-1)); alpha2 #p-value is less than alpha2, so is an outlier
+2*(1-pt(abs(tt4),n-p-1)); alpha2 #p-value is less than alpha2, so is an outlier
 
 #Just as in the review for Leverage points in the section above, lets put together a table of the highest
 #Bonferroni corrections in each model and analyze them
 #compare summaries of all the largest hatvalues for each model
-stud_table<-full_join(stud2, stud3, by="date")
-stud_table<-full_join(stud_table, stud5, by="date")
-stud_table<-stud_table%>%arrange(desc(abs(stud2)))
-stud_table<-na.omit(stud_table[abs(stud_table$stud2)>(bv*.85) | abs(stud_table$stud3)>(bv3*.85) | abs(stud_table$stud5)>(bv5*.85),])
+stud_table<-full_join(stud, stud3, by="date")
+stud_table<-full_join(stud_table, stud4, by="date")
+stud_table<-stud_table%>%arrange(desc(abs(stud)))
+stud_table<-na.omit(stud_table[abs(stud_table$stud)>(bv*.85) | abs(stud_table$stud3)>(bv3*.85) | abs(stud_table$stud4)>(bv4*.85),])
 stud_table<-stud_table%>%arrange(desc(date))
 
 #for export to .csv file
@@ -428,85 +436,103 @@ df2 %>%
 ########################################## Influential Observations ###################################################
 #Run Cook's Distances for all 3 models
 
-cook2=data.frame(cooks.distance(lmodvol2))
+cook=data.frame(cooks.distance(lmodvol))
 cook3=data.frame(cooks.distance(lmodvol3))
-cook5=data.frame(cooks.distance(lmodvol5))
+cook4=data.frame(cooks.distance(lmodvol4))
+cook6=data.frame(cooks.distance(lmodvol6))
 
-colnames(cook2)="cook_dist2"
+colnames(cook)="cook_dist"
 colnames(cook3)="cook_dist3"
-colnames(cook5)="cook_dist5"
+colnames(cook4)="cook_dist4"
+colnames(cook6)="cook_dist6"
 
 par(mfrow=c(2,2))
-plot(cook2$cook_dist,xlab="Observation Number", ylab="Cook's Distance", main="Simple Model")
+plot(cook$cook_dist,xlab="Observation Number", ylab="Cook's Distance", main="Simple Model")
 #text(which(cook2$cook_dist2>=.02),labels=rownames(cook2[which(cook2$cook_dist2>.02),,drop=FALSE]), pos=4)
 plot(cook3$cook_dist,xlab="Observation Number", ylab="Cook's Distance", main="Transformed Model")
-plot(cook5$cook_dist,xlab="Observation Number", ylab="Cook's Distance", main="Single Polynomial Model")
+plot(cook4$cook_dist,xlab="Observation Number", ylab="Cook's Distance", main="Single Polynomial Model")
+plot(cook4$cook_dist,xlab="Observation Number", ylab="Cook's Distance", main="Multiple Polynomial Model")
 par(mfrow=c(1,1))
 
 par(mfrow=c(2,2))
-halfnorm(cook2$cook_dist,3,labs=rownames(cook2),ylab="Cook's distances",main="Simple Model")
+halfnorm(cook$cook_dist,3,labs=rownames(cook),ylab="Cook's distances",main="Simple Model")
 halfnorm(cook3$cook_dist,3,labs=rownames(cook3),ylab="Cook's distances",main="Transformed Model")
-halfnorm(cook5$cook_dist,3,labs=rownames(cook5),ylab="Cook's distances",main="Single Polynomial Model")
+halfnorm(cook4$cook_dist,3,labs=rownames(cook4),ylab="Cook's distances",main="Single Polynomial Model")
+halfnorm(cook6$cook_dist,3,labs=rownames(cook6),ylab="Cook's distances",main="Multiple Polynomial Model")
 par(mfrow=c(1,1))
 
-tail(sort(cook2$cook_dist))
+tail(sort(cook$cook_dist))
 tail(sort(cook3$cook_dist))
-tail(sort(cook5$cook_dist))
+tail(sort(cook4$cook_dist))
+tail(sort(cook6$cook_dist))
 
 #identify the dates and value of the largest Cook's Distances for each model (for use in the Final Project Report)
-head(cook2 %>% 
-  mutate(Date=rownames(cook2))%>%
-  arrange(desc(cook_dist2)))
+head(cook %>% 
+  mutate(Date=rownames(cook))%>%
+  arrange(desc(cook_dist)))
 
 head(cook3 %>% 
        mutate(Date=rownames(cook3))%>%
        arrange(desc(cook_dist3)))
 
-head(cook5 %>% 
-       mutate(Date=rownames(cook5))%>%
-       arrange(desc(cook_dist5)))
+head(cook4 %>% 
+       mutate(Date=rownames(cook4))%>%
+       arrange(desc(cook_dist4)))
+
+head(cook6 %>% 
+       mutate(Date=rownames(cook6))%>%
+       arrange(desc(cook_dist6)))
 
 
 
-cases2=which(cook2$cook_dist>.02)
+cases=which(cook$cook_dist>.02)
 cases3=which(cook3$cook_dist>.02)
-cases5=which(cook5$cook_dist>.02)
+cases4=which(cook4$cook_dist>.02)
+cases6=which(cook6$cook_dist>.02)
 
-cook2$cook_dist[cases2]
+cook$cook_dist[cases]
 cook3$cook_dist[cases3]
-cook5$cook_dist[cases5]
+cook4$cook_dist[cases4]
+cook6$cook_dist[cases6]
 
 
 #What happens if we leave the three most influential points out, or just the most influential one
 #Simple model
-lmodvol2_a<-lm(IV~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2[-cases2,])
-lmodvol2_b<-lm(IV~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2,subset=cook2$cook_dist2<max(cook2$cook_dist2))
-summary(lmodvol2)
-summary(lmodvol2_a)
-summary(lmodvol2_b)
+lmodvol_a<-lm(IV~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2[-cases,])
+lmodvol_b<-lm(IV~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df2,subset=cook$cook_dist<max(cook$cook_dist))
+summary(lmodvol)
+summary(lmodvol_a)
+summary(lmodvol_b)
 
-lmodvol3_a<-lm(IV^-.25~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2[-cases3,])
-lmodvol3_b<-lm(IV^-.25~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2,subset=cook3$cook_dist3<max(cook3$cook_dist3))
+lmodvol3_a<-lm(IV^-.3838384~SwapRate+HV+SPX+SPXHV+CDXHY+Spread,data=df2[-cases3,])
+lmodvol3_b<-lm(IV^-.3838384~SwapRate+HV+SPX+SPXHV+CDXHY+Spread,data=df2,subset=cook3$cook_dist3<max(cook3$cook_dist3))
 summary(lmodvol3)
 summary(lmodvol3_a)
 summary(lmodvol3_b)
 
-lmodvol5_a<-lm(IV~poly(SwapRate,2)+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2[-cases5,])
-lmodvol5_b<-lm(IV~poly(SwapRate,2)+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2,subset=cook5$cook_dist5<max(cook5$cook_dist5))
-summary(lmodvol5)
-summary(lmodvol5_a)
-summary(lmodvol5_b)
+lmodvol4_a<-lm(log(IV-2.070707)~SwapRate+HV+Curve+SPX+SPXHV+CDXHY+Spread,data=df2[-cases4,])
+lmodvol4_b<-lm(log(IV-2.070707)~SwapRate+HV+Curve+SPX+SPXHV+CDXHY+Spread,data=df2,subset=cook4$cook_dist4<max(cook4$cook_dist4))
+summary(lmodvol4)
+summary(lmodvol4_a)
+summary(lmodvol4_b)
+
+lmodvol6_a<-lm(IV~poly(SwapRate,Curve,degree=6)+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2[-cases6,])
+lmodvol6_b<-lm(IV~poly(SwapRate,Curve,degree=6)+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2,subset=cook6$cook_dist6<max(cook6$cook_dist6))
+summary(lmodvol6)
+summary(lmodvol6_a)
+summary(lmodvol6_b)
 
 
 #Show all the plots provided by R
 par(mfrow=c(2,2))
-plot(lmodvol2)
+plot(lmodvol)
 plot(lmodvol3)
-plot(lmodvol5)
+plot(lmodvol4)
+plot(lmodvol6)
 par(mfrow=c(1,1))
 
 #################################### Check the Structure of the Model #################################################
-#Run Partial Regression Plots for all 3 of the models, for every variable
+#Run Partial Regression Plots for all 4 of the models, for every variable
 
 #Simple Model
 #Obtain a version of Y with the effect of all predictors but one
