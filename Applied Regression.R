@@ -12,25 +12,26 @@ require(ggthemes)
 options(scipen=999999)
 
 ############################################ Create the Data Set #######################################################
+file = "C:/Users/pjant/Drew/DATA 601/datasets/final project/Dataset for Final Project.xlsx"
 
 #Pull data in from excel files to create multiple data frames ordered by date
-df_swapIV <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(2:3))
-df_swapRates <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(5:6))
-df_swapHV <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(5,7))
-df_VIX <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(9:10))
-df_curve <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(12:13))
-df_SPX <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(15:16))
-df_SPXHV <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(15,17))
-df_CDXHY <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(19:20))
-df_Spreads <- read.xlsx("C:/Users/pjant/Drew/DATA 503/Dataset for Final Project.xlsx",sheet=1, detectDates=TRUE, startRow=2,cols=c(22:23))
+df_swapIV <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(2:3))
+df_swapRates <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(5:6))
+df_swapHV <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(5,7))
+df_VIX <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(9:10))
+df_curve <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(12:13))
+df_SPX <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(15:16))
+df_SPXHV <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(15,17))
+df_Spreads <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(22:23))
+df_HYG <- read.xlsx(file,sheet=1, detectDates=TRUE, startRow=2,cols=c(26:27))
 
 #Combine these into one dataframe based on date
-df<-Reduce(function(x,y) merge(x,y,all=TRUE),list(df_swapIV,df_swapRates,df_swapHV,df_VIX,df_curve,df_SPX,df_SPXHV,df_CDXHY,df_Spreads))
+df<-Reduce(function(x,y) merge(x,y,all=TRUE),list(df_swapIV,df_swapRates,df_swapHV,df_VIX,df_curve,df_SPX,df_SPXHV,df_Spreads,df_HYG))
 
 df$SWAP10.HV<-df$SWAP10.HV*100
 
 #Filter for dates beginning after 2012-08-07 (this is when CDX was first quoted)
-df<-df%>%filter(Date>="2012-08-07")
+#df<-df%>%filter(Date>="2012-08-07")
 
 
 ############################################ Check for Missing Data ###################################################
@@ -53,16 +54,20 @@ df<-df[-1]
 
 #Rename the columns of the dataframe
 colnames(df) <- c("IV", "SwapRate", "HV", "VIX", "Curve", "SPX", "SPXHV", "CDXHY", "Spread")
+df = as.xts(df)
+
+df_train = df["/20191108"]
+df_test = df["20191111/"]
 
 #analyze data
-summary(df)
-dim(df)
-plot(df)
+summary(df_train)
+dim(df_train)
+plot(as.data.frame(df_train))
 
 ############################################ Check for Collinearity ###################################################
 
 #check pairwise correlations of the predictors
-df$IV=df$IV/df$SwapRate
+df_train$IV=df_train$IV/df_train$SwapRate
 lmodvol<-lm(IV~SwapRate+HV+VIX+Curve+SPX+SPXHV+CDXHY+Spread,data=df)
 
 dfm<-model.matrix(lmodvol)[,-1]
@@ -82,7 +87,8 @@ vif(dfm[,-5]) #remove SPX
 ############################################## Create the Model ######################################################
 
 #Create the model without SPX and compare to the original model
-df2 <- df #had to rename this or the boxcox function below will not run
+#had to rename this or the boxcox function below will not run
+df2 <- as.data.frame(df_train)
 lmodvol2<-lm(IV~SwapRate+HV+VIX+Curve+SPXHV+CDXHY+Spread,data=df2)
 summary(lmodvol2)
 summary(lmodvol)
