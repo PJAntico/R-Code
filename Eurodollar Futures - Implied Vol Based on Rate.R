@@ -19,7 +19,7 @@ require("plotly")
 
 ## Create a file from the CME data
 
-cme.settle <- read.csv("ftp://ftp.cmegroup.com/settle/cme.settle.20200507.s.csv")
+cme.settle <- read.csv("ftp://ftp.cmegroup.com/settle/cme.settle.20200520.s.csv")
 cme.slate <- read.xlsx("C:/Users/pjant/Downloads/Product Slate Export.xlsx")
 
 # to see how many Futures are actually in the larger "Settle" data.frame.  Then to count the number of futures by symbol.
@@ -118,7 +118,7 @@ edOptionsMatrix$MatDt <- as.Date(edOptionsMatrix$MatDt)
 edOptionsMatrix$BizDt <- as.Date(edOptionsMatrix$BizDt)
 edOptionsMatrix$UndlyMMY <- as.Date(edOptionsMatrix$UndlyMMY)
 for(i in 1:nrow(edOptionsMatrix)) {
-    isub = c(1,2,4,16,22:26)
+    isub = c(17:18,20:26)
     if(i %in% isub) next
     if((edOptionsMatrix$MatDt[[i]] - edOptionsMatrix$BizDt[[i]]) <= 7 || edOptionsMatrix$optSettlePrice[[i]] > 1000) next()
     type[[i]] <- "call"
@@ -136,7 +136,8 @@ for(i in 1:nrow(edOptionsMatrix)) {
 }
 
 edOptionsMatrix$ImpVol <- as.numeric(format(impliedVolatility, digits = 2))
-edOptionsMatrix$optSettlePrice <- edOptionsMatrix$optSettlePrice * 100
+edOptionsMatrix$optSettlePrice <- as.numeric(edOptionsMatrix$optSettlePrice) * 100
+edOptionsMatrix$Strike <- as.numeric(edOptionsMatrix$Strike)
 edOptionsMatrix <- edOptionsMatrix[complete.cases(edOptionsMatrix),]
 edOptionsMatrix$MatDt <- as.character(edOptionsMatrix$MatDt)
 
@@ -152,8 +153,8 @@ edOptionsMatrix$bbergSym <- paste(edOptionsMatrix$bbergSym, bberg.months[month(e
 p <- ggplot(edOptionsMatrix, aes(x = MatDt, y = UndlyMMY, size = OpenInt, color = Product.Name, UnderlyingP = FutSettlePrice, 
                                  Symbol = bbergSym, Price = optSettlePrice, Vol = ImpVol)) + 
   geom_point() +
-  geom_text(aes(label = edOptionsMatrix$ImpVol), size = 2.0, nudge_y = -50) +
-  geom_text(aes(label = edOptionsMatrix$optSettlePrice), size = 2.0, nudge_y = 50) +
+  geom_text(aes(label = ImpVol), size = 2.0, nudge_y = -50) +
+  geom_text(aes(label = optSettlePrice), size = 2.0, nudge_y = 50) +
   scale_size_continuous() +
   scale_x_discrete(name = "Option Expiration", breaks = edOptionsMatrix$MatDt) +
   scale_y_date(name = "Underlying Eurodollar Future", breaks = edOptionsMatrix$UndlyMMY) +
